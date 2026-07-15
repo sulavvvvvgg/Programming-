@@ -12,7 +12,8 @@ int main()
     struct sockaddr_un server_address;
 
     char password[100];
-
+    char correct_password[] = "hello123";
+	
     server_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (server_socket == -1)
@@ -53,6 +54,15 @@ int main()
     read(client_socket, password, sizeof(password));
 
     printf("Received password: %s\n", password);
+    
+    if (strcmp(password, correct_password) == 0)
+    {
+        printf("Access Granted\n");
+    }
+    else
+    {
+       printf("Access Denied\n");
+    }
 
     close(client_socket);
     close(server_socket);
