@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/types.h>
 
 int main()
 {
@@ -13,7 +14,10 @@ int main()
 
     char password[100];
     char correct_password[] = "hello123";
-    char result[100];	
+    char result[100];
+
+    uid_t user_id;
+	
     server_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (server_socket == -1)
@@ -54,6 +58,10 @@ int main()
     read(client_socket, password, sizeof(password));
 
     printf("Received password: %s\n", password);
+
+    user_id = geteuid();
+
+    printf("Effective User ID: %d\n", user_id);
     
     if (strcmp(password, correct_password) == 0)
     {
