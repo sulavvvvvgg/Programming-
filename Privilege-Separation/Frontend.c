@@ -12,6 +12,8 @@ int main()
 
     char password[100];
 
+    char result[100];
+
     client_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (client_socket == -1)
@@ -38,7 +40,12 @@ int main()
 
     printf("Password sent to backend.\n");
 
+    read(client_socket, result, sizeof(result));
+
+    printf("%s\n", result);
+
     close(client_socket);
 
     return 0;
+
 }
