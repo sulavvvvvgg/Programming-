@@ -13,7 +13,7 @@ int main()
 
     char password[100];
     char correct_password[] = "hello123";
-	
+    char result[100];	
     server_socket = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (server_socket == -1)
@@ -57,12 +57,14 @@ int main()
     
     if (strcmp(password, correct_password) == 0)
     {
-        printf("Access Granted\n");
-    }
+       strcpy(result, "Access Granted");
+    } 
     else
     {
-       printf("Access Denied\n");
+       strcpy(result, "Access Denied");
     }
+
+    write(client_socket, result, sizeof(result));
 
     close(client_socket);
     close(server_socket);
