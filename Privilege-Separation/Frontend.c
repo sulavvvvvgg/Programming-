@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <errno.h>
 
 int main()
 {
@@ -27,7 +28,7 @@ int main()
 
     if (connect(client_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
     {
-        printf("Connection failed.\n");
+        perror("connect");
         return 1;
     }
 
@@ -36,13 +37,27 @@ int main()
     printf("Enter password: ");
     scanf("%99s", password);
 
-    write(client_socket, password, sizeof(password));
+    if (write(client_socket, password, sizeof(password)) == -1)
+    {
+        printf("Failed to send password.\n");
 
+        close(client_socket);
+
+        return 1;
+    }
     printf("Password sent to backend.\n");
 
-    read(client_socket, result, sizeof(result));
+    if (read(client_socket, result, sizeof(result)) <= 0)
+    {
+        printf("Failed to receive result.\n");
 
+        close(client_socket);
+
+        return 1;
+    }
     printf("%s\n", result);
+
+    memset(password, 0, sizeof(password));
 
     close(client_socket);
 
